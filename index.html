@@ -84,7 +84,7 @@ async function loadAdmin() {
     document.getElementById('ad-war-battles').textContent = warBattles.toLocaleString('pt-BR');
     document.getElementById('ad-war-players').textContent = (warPlayers.count||0) + ' jogadores';
     document.getElementById('ad-total').textContent        = totalRounds.toLocaleString('pt-BR');
-     document.getElementById('ad-total-players').textContent = allNicks.size + ' (' + guestCount + ' convidados)';
+    document.getElementById('ad-total-players').textContent = allNicks.size + ' (' + guestCount + ' convidados)';
 
     // build ranking table
     const rows = [
@@ -574,8 +574,7 @@ function fillUser() {
 }
 
 async function loadStats() {
-  try { const {count} = await sb.from('players').select('*',{count:'exact',head:true}); document.getElementById('stat-players').textContent = count ?? '—'; } catch {}
-  try { const {count} = await sb.from('game_sessions').select('*',{count:'exact',head:true}); document.getElementById('stat-partidas').textContent = count ?? '—'; } catch { document.getElementById('stat-partidas').textContent = '—'; }
+  // stats removidas do hub público
 }
 
 function openGame(url) {
