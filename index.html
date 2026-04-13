@@ -84,7 +84,7 @@ async function loadAdmin() {
     document.getElementById('ad-war-battles').textContent = warBattles.toLocaleString('pt-BR');
     document.getElementById('ad-war-players').textContent = (warPlayers.count||0) + ' jogadores';
     document.getElementById('ad-total').textContent        = totalRounds.toLocaleString('pt-BR');
-    document.getElementById('ad-total-players').textContent = allNicks.size + ' (' + guestCount + ' convidados)';
+     document.getElementById('ad-total-players').textContent = allNicks.size + ' (' + guestCount + ' convidados)';
 
     // build ranking table
     const rows = [
