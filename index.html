@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JackBear — Plataforma</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
 // ── REGISTRO SILENCIOSO DE CONVIDADO ──
 async function registerGuest(nome, email) {
   const payload = { nick: nome, email: email || null, tipo: 'guest', last_seen: new Date().toISOString() };
@@ -111,7 +112,6 @@ async function loadAdmin() {
     console.error('Admin load error:', err);
   }
 }
-
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap');
