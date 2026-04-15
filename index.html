@@ -91,7 +91,7 @@ async function loadAdmin() {
     const rows = [
       ...(f1Players.data||[]).slice(0,5).map(p=>({nick:p.nick,jogo:'F1',tag:'tag-f1',label:'🏎️ Fórmula Jack',rounds:p.games||0,best:p.best_score||0})),
       ...(basPlayers.data||[]).slice(0,5).map(p=>({nick:p.nick,jogo:'BAS',tag:'tag-bas',label:'🏀 BASJack',rounds:p.games||0,best:p.best_score||0})),
-      ...(beerPlayers.data||[]).slice(0,5).map(p=>({nick:p.nick,jogo:'BEER',tag:'tag-beer',label:'🎳 JackBeer',rounds:p.games||0,best:p.best_ml||0})),
+      ...(beerPlayers.data||[]).slice(0,5).map(p=>({nick:p.nick,jogo:'BEER',tag:'tag-beer',label:'🍺 JackBeer',rounds:p.games||0,best:p.best_ml||0})),
       ...(warPlayers.data||[]).slice(0,5).map(p=>({nick:p.nick,jogo:'WAR',tag:'tag-war',label:'⚔️ JackWar',rounds:p.battles||0,best:p.total_pts||0})),
     ].sort((a,b) => b.rounds - a.rounds).slice(0,20);
 
@@ -449,7 +449,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
     <div class="game-card cbeer" onclick="openGame('https://jackbeer.pages.dev')">
       <div class="game-badge">🍺 Online</div>
-      <div class="game-icon">🎳</div>
+      <div class="game-icon">🍺</div>
       <div class="game-name">JACKBEER</div>
       <div class="game-desc">Pinball com física real, multiplicadores e o JackBear no controle do flipper.</div>
       <div class="game-bottom"><div class="game-cta">Em breve</div><div class="game-arrow">→</div></div>
@@ -457,7 +457,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
     <div class="game-card cwar" onclick="openGame('https://jackbearwar.pages.dev')">
       <div class="game-badge">⚔️ Online</div>
-      <div class="game-icon">🃏</div>
+      <div class="game-icon">💣</div>
       <div class="game-name">JACKWAR</div>
       <div class="game-desc">Guerra de cartas estratégica. Domina a mesa, conquista o ranking, derrota todos.</div>
       <div class="game-bottom"><div class="game-cta">Jogar agora</div><div class="game-arrow">→</div></div>
@@ -632,7 +632,7 @@ function toast(msg, type='ok') {
         <div class="admin-card-sub" id="ad-bas-players">— jogadores</div>
       </div>
       <div class="admin-card">
-        <div class="admin-card-title">🎳 JackBeer</div>
+        <div class="admin-card-title">🍺 JackBeer</div>
         <div class="admin-card-val" id="ad-beer-games">—</div>
         <div class="admin-card-sub" id="ad-beer-players">— jogadores</div>
       </div>
