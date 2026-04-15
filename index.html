@@ -43,12 +43,13 @@ async function loadAdmin() {
     // Fórmula Jack — total_races em game_state + count players
     // Projeto 1: BASJack + Fórmula Jack
     // Projeto 2: JackBeer + JackWar
-    const [f1State, f1Players, basPlayers, beerPlayers, warPlayers, hubP1, hubP2] = await Promise.all([
+    const [f1State, f1Players, basPlayers, beerPlayers, warPlayers, jjPlayers, hubP1, hubP2] = await Promise.all([
       sb.from('game_state').select('total_races').single().then(r => r.data).catch(()=>null),
       sb.from('players').select('nick, games, best_score', { count: 'exact' }).catch(()=>({data:[],count:0})),
       sb.from('players').select('nick, games, best_score', { count: 'exact' }).catch(()=>({data:[],count:0})),
       sb2.from('jackbeer_players').select('nick, games, best_ml', { count: 'exact' }).catch(()=>({data:[],count:0})),
       sb2.from('war_players').select('nick, battles, total_pts', { count: 'exact' }).catch(()=>({data:[],count:0})),
+      sb.from('jj_players').select('nick, games, best_score', { count: 'exact' }).catch(()=>({data:[],count:0})),
       sb.from('hub_players').select('nick, tipo, last_seen', { count: 'exact' }).catch(()=>({data:[],count:0})),
       sb2.from('hub_players').select('nick, tipo, last_seen', { count: 'exact' }).catch(()=>({data:[],count:0})),
     ]);
@@ -64,13 +65,15 @@ async function loadAdmin() {
     // JackWar
     const warBattles = (warPlayers.data||[]).reduce((s,p) => s + (Number(p.battles)||0), 0);
 
-    const totalRounds = f1Races + basGames + beerGames + warBattles;
+    const jjGames = (jjPlayers.data||[]).reduce((s,p) => s + (Number(p.games)||0), 0);
+    const totalRounds = f1Races + basGames + beerGames + warBattles + jjGames;
 
     // unique players (by nick, deduplicated across games)
     const allNicks = new Set([
       ...(f1Players.data||[]).map(p=>p.nick),
       ...(beerPlayers.data||[]).map(p=>p.nick),
       ...(warPlayers.data||[]).map(p=>p.nick),
+      ...(jjPlayers.data||[]).map(p=>p.nick),
       ...(hubPlayers.data||[]).map(p=>p.nick),
     ]);
     const guestCount = (hubPlayers.data||[]).filter(p=>p.tipo==='guest').length;
@@ -262,6 +265,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .cbas{--gc:rgba(245,158,11,.06);--ga:rgba(245,158,11,.28);--ga2:#fbbf24;--gi:rgba(245,158,11,.1);--gb-bg:rgba(245,158,11,.12);--gb-c:#fbbf24;}
 .cbeer{--gc:rgba(34,197,94,.06);--ga:rgba(34,197,94,.28);--ga2:#4ade80;--gi:rgba(34,197,94,.1);--gb-bg:rgba(34,197,94,.12);--gb-c:#4ade80;}
 .cwar{--gc:rgba(124,58,237,.06);--ga:rgba(124,58,237,.28);--ga2:#a78bfa;--gi:rgba(124,58,237,.1);--gb-bg:rgba(124,58,237,.12);--gb-c:#a78bfa;}
+.cjj{--gc:rgba(240,192,0,.06);--ga:rgba(240,192,0,.28);--ga2:#f0c000;--gi:rgba(240,192,0,.1);--gb-bg:rgba(240,192,0,.12);--gb-c:#f0c000;}
 
 .stats-bar{width:100%;max-width:960px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:36px;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px;display:flex;flex-direction:column;gap:4px;}
@@ -462,6 +466,14 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <div class="game-desc">Guerra de cartas estratégica. Domina a mesa, conquista o ranking, derrota todos.</div>
       <div class="game-bottom"><div class="game-cta">Jogar agora</div><div class="game-arrow">→</div></div>
     </div>
+
+    <div class="game-card cjj" onclick="openGame('https://jackjoker.pages.dev')">
+      <div class="game-badge">🎰 Online</div>
+      <div class="game-icon" style="padding:0;overflow:hidden;"><img src="data:image/jpeg;base64,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" style="width:100%;height:100%;object-fit:cover;border-radius:11px;"></div>
+      <div class="game-name">JACKJOKER</div>
+      <div class="game-desc">Slot machine com estratégia. Escolha seus símbolos, gire os reels e dispute o Rei da Mesa.</div>
+      <div class="game-bottom"><div class="game-cta">Jogar agora</div><div class="game-arrow">→</div></div>
+    </div>
   </div>
 
 
@@ -641,6 +653,11 @@ function toast(msg, type='ok') {
         <div class="admin-card-val" id="ad-war-battles">—</div>
         <div class="admin-card-sub" id="ad-war-players">— jogadores</div>
       </div>
+      <div class="admin-card">
+        <div class="admin-card-title">🎰 JackJoker</div>
+        <div class="admin-card-val" id="ad-jj-games">—</div>
+        <div class="admin-card-sub" id="ad-jj-players">— jogadores</div>
+      </div>
     </div>
 
     <!-- total geral -->
@@ -679,4 +696,3 @@ function toast(msg, type='ok') {
 
 </body>
 </html>
-
